@@ -4,7 +4,7 @@
 
 ---
 
-**Long Abstract (≈ 460 words)**  
+**Long Abstract**  
 
 Robotic manipulation in unstructured environments demands fast, reliable perception and closed‑loop force control, yet most existing solutions rely on heavyweight GPUs or multiple cameras that are unsuitable for mobile platforms. This work presents a **complete, end‑to‑end manipulation pipeline that runs entirely on a single Xilinx Kria KV260 embedded AI board** (Zynq‑MPSoC with an on‑chip INT8 DPU and a Cortex‑R5 realtime core). The system integrates four tightly coupled components:
 
@@ -12,7 +12,7 @@ Robotic manipulation in unstructured environments demands fast, reliable percept
 
 2. **Visuo‑Tactile Fusion via Mask‑and‑Replace** – The four corners of the image are masked and filled with a calibrated 8 × 8 pressure map from an I²C pressure matrix. Optional blurred‑edge patches (Gaussian‑blur of the full‑resolution image, down‑sampled and up‑sampled) provide low‑frequency contextual information without additional sensors.
 
-3. **“Spring‑Eye” Active View Selection** – When the initial centre patch yields a low Grasp‑Score (a weighted combination of detection confidence, pose reprojection error, safety margin, and edge penalty), the pipeline automatically generates four overlapping patches (left, right, up, down). Each patch is processed by the DPU; the patch with the highest score is selected for grasp execution. This deterministic multi‑region scanning eliminates the need for mechanical pan‑tilt cameras while handling objects that lie near the image border or are partially occluded.
+3. **Active View Selection** – When the initial centre patch yields a low Grasp‑Score (a weighted combination of detection confidence, pose reprojection error, safety margin, and edge penalty), the pipeline automatically generates four overlapping patches (left, right, up, down). Each patch is processed by the DPU; the patch with the highest score is selected for grasp execution. This deterministic multi‑region scanning eliminates the need for mechanical pan‑tilt cameras while handling objects that lie near the image border or are partially occluded.
 
 4. **Ultra‑Light Slip Detection & Adaptive Force Control** – A tiny convolutional network (two depth‑wise 3 × 3 convolutions + a fully‑connected layer, ≈ 1 k parameters) is trained on synthetic slip data generated with PyBullet and fine‑tuned on a small set of real grasps. After QAT, the model runs on the Cortex‑R5 in < 1 ms. Its binary slip flag drives a gain‑scheduled PID controller (1 kHz ISR) that raises the grasping force only when slip is detected, reducing peak contact forces on delicate objects by up to 30 % while preserving grasp stability.
 
